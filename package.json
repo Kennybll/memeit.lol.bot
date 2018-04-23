@@ -1,0 +1,24 @@
+{
+  "name": "memeit.lol.bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/memeit-lol/memeit.lol.bot.git"
+  },
+  "author": "",
+  "license": "GNU",
+  "bugs": {
+    "url": "https://github.com/memeit-lol/memeit.lol.bot/issues"
+  },
+  "homepage": "https://github.com/memeit-lol/memeit.lol.bot#readme",
+  "dependencies": {
+    "mongodb": "^3.0.7",
+    "steem": "^0.7.1",
+    "system-sleep": "^1.3.6"
+  }
+}
