@@ -20,16 +20,7 @@ async function work () {
   let m = await mongo.connect(config)
   let db = await m.db('memeit')
   let col = await db.collection('posts')
-  let posts = await col.find({hidden: false, voted: true}).toArray()
-  posts.filter(async function (p) {
-    let col2 = await db.collection('bot')
-    let votes = await col2.find({author: p.author, permlink: p.permlink}).toArray()
-    if (votes.length < 1) {
-      return true
-    } else {
-      return false
-    }
-  })
+  let posts = await col.find({hidden: false, voted: true, bot: undefined}).toArray()
   posts = posts.slice(0, 10)
   for (let p of posts) {
     steem.broadcast.vote(config2, 'memeit.lol', p.author, p.permlink, Math.floor(10000 / posts.length), function (err, result) {
@@ -38,14 +29,13 @@ async function work () {
       }
     })
     console.log(p.author, p.permlink)
-    let col2 = await db.collection('bot')
-    await col2.insertOne({author: p.author, permlink: p.permlink, date: Date.now()})
+    await col.findOneAndUpdate({author: p.author, permlink: p.permlink}, { $set: {bot: true}})
     await sleep(4000)
   }
   console.log("Done")
 }
 
-setInterval(async function() {
+setInterval(async function () {
   await steem.api.getAccounts(['memeit.lol'], async function(err, account) {
     var vp = getVotingPower(account[0]) / 100
     if(vp === 100) await work()
