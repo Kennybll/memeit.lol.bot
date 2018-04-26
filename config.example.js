@@ -1,4 +1,6 @@
 module.exports = {
   mongo: '',
-  steem: ''
+  accounts: [
+    {name: 'memeit.lol', key: ''}
+  ]
 }

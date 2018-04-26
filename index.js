@@ -1,7 +1,7 @@
 let steem = require('steem')
 let mongo = require('mongodb')
 let config = require('./config').mongo
-let config2 = require('./config').steem
+let accounts = require('./config').accounts
 let sleep = require('system-sleep')
 
 function getVotingPower(account) {
@@ -23,11 +23,13 @@ async function work () {
   let posts = await col.find({hidden: false, voted: true, bot: undefined}).toArray()
   posts = posts.slice(0, 10)
   for (let p of posts) {
-    steem.broadcast.vote(config2, 'memeit.lol', p.author, p.permlink, Math.floor(10000 / posts.length), function (err, result) {
-      if (err) {
-        console.log(err)
-      }
-    })
+    for (let account of accounts) {
+      steem.broadcast.vote(account.key, account.name, p.author, p.permlink, Math.floor(10000 / posts.length), function (err, result) {
+        if (err) {
+          console.log(err)
+        }
+      })
+    }
     console.log(p.author, p.permlink)
     await col.findOneAndUpdate({author: p.author, permlink: p.permlink}, { $set: {bot: true}})
     await sleep(4000)
