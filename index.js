@@ -43,3 +43,8 @@ setInterval(async function () {
     if(vp === 100) await work()
   });
 }, 900000)
+
+steem.api.getAccounts(['memeit.lol'], async function(err, account) {
+  var vp = getVotingPower(account[0]) / 100
+  if(vp === 100) await work()
+});
