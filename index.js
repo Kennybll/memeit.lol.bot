@@ -20,7 +20,8 @@ async function work () {
   let m = await mongo.connect(config)
   let db = await m.db('memeit')
   let col = await db.collection('posts')
-  let posts = await col.find({time: {$lt: Date.now() - 86400000}, hidden: false, voted: true, bot: undefined}).toArray()
+  let posts = await col.find({time: {$lt: new Date(Date.now() - 86400000)}, hidden: false, bot: undefined}).toArray()
+  posts = posts.slice(0, 15)
   for (let p of posts) {
     for (let account of accounts) {
       steem.broadcast.vote(account.key, account.name, p.author, p.permlink, Math.floor(10000 / posts.length), function (err, result) {
