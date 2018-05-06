@@ -17,6 +17,14 @@ function getVotingPower(account) {
 }
 
 async function work () {
+  for (let account of accounts) {
+    steem.api.getAccounts([account.name], function (err, acc) {
+      if (err) console.log(err)
+      steem.broadcast.claimRewardBalance(account.active, [account.name], acc[0].reward_steem_balance, acc[0].reward_sbd_balance, acc[0].reward_vesting_balance, function (err, result) {
+        if (err) console.log(err)
+      })
+    })
+  }  
   let m = await mongo.connect(config)
   let db = await m.db('memeit')
   let col = await db.collection('posts')
